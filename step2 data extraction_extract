@@ -1,0 +1,88 @@
+*JMDCのRawデータの保管場所;
+libname PC "F:\202203Gao";
+*Rawデータファイルの保管場所;
+libname RAW "F:\202203Gao\raw";
+
+
+data AYA_code;
+  set PC.drug_master;
+  where VAR12 like "L01DB%";
+run;
+
+/*45*/
+
+data AYA_code;
+set AYA_code;
+keep VAR1;
+rename VAR1 = drug_code;
+run;
+
+data RAW.drug;
+  set PC.drug;
+  rename VAR7=drug_code;
+run;
+
+proc sort data= RAW.drug;
+by drug_code;
+run;
+/*1218601207*/
+
+
+proc sort data= AYA_code;
+by drug_code;
+run;
+
+data RAW.AYA;
+merge AYA_code(in=a) RAW.drug(in=b);
+if a and b;
+by drug_code;
+run;
+
+data RAW.AYA_patient;
+set RAW.AYA;
+keep VAR1;
+run;
+
+proc sort data = RAW.AYA_patient nodupkey;
+by VAR1;
+run;
+
+
+%macro RAW (data=);
+proc sort data=PC.&data.; by VAR1; run;
+%mend;
+%RAW (data=demographics);
+*13215825 obs;
+%RAW (data=rece);
+*507010853 obs;
+%RAW (data=disease);
+*1158906955 obs;
+%RAW (data=drug);
+*1218601207 obs;
+%RAW (data=procedure);
+*3366599599 obs;
+
+
+%macro AYA (data=);
+data RAW.AYA_&data.;
+  merge RAW.AYA_patient(in=a) PC.&data.(in=b);
+  by VAR1;
+  if a and b;
+run;
+%mend;
+%AYA (data=demographics);
+*19834 obs;
+%AYA (data=rece);
+*2004114 obs;
+%AYA (data=disease);
+*9411539 obs;
+%AYA (data=drug);
+*15217402 obs;
+%AYA (data=procedure);
+
+
+
+proc sql noprint;
+create table RAW.AYA_procedure as select distinct * from PC.procedure where VAR1 in (select VAR1 from RAW.AYA_patient);
+quit;
+*41488224 obs;
