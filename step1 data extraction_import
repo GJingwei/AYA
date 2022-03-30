@@ -1,0 +1,768 @@
+%let path = D:\京都大学大学院様_最新202107分;
+libname PC "D:\個人フォルダ\202203Gao";
+
+
+data PC.demographics;
+       %let _EFIERR_ = 0; /* エラー検出のマクロ変数を設定します */
+       infile "&path.\母数.csv" delimiter = ',' MISSOVER DSD lrecl=32767 firstobs=2 ;
+         informat VAR1 $20. ;
+         informat VAR2 $8. ;
+         informat VAR3 $16. ;
+         informat VAR4 $20. ;
+         informat VAR5 $16. ;
+         informat VAR6 $64. ;
+         informat VAR7 $8. ;
+         informat VAR8 $8. ;
+         informat VAR9 $3. ;
+         format VAR1 $20. ;
+         format VAR2 $8. ;
+         format VAR3 $16. ;
+         format VAR4 $20. ;
+         format VAR5 $16. ;
+         format VAR6 $64. ;
+         format VAR7 $8. ;
+         format VAR8 $8. ;
+         format VAR9 $3. ;
+      input
+                  VAR1
+                  VAR2
+                  VAR3
+                  VAR4
+                  VAR5
+                  VAR6
+                  VAR7
+                  VAR8
+                  VAR9
+      ;
+      if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+run;
+/*13215825 obs*/
+
+
+data PC.facility;
+      %let _EFIERR_ = 0; /* エラー検出のマクロ変数を設定します */
+      infile "&path.\施設.csv" delimiter = ',' MISSOVER DSD lrecl=32767 firstobs=2 ;
+         informat VAR1 $16. ;
+         informat VAR2 $28. ;
+         informat VAR3 $16. ;
+         informat VAR4 $48. ;
+         informat VAR5 $64. ;
+         informat VAR6 $40. ;
+         informat VAR7 $3. ;
+         informat VAR8 $3. ;
+         informat VAR9 $3. ;
+         informat VAR10 $3. ;
+         format VAR1 $16. ;
+         format VAR2 $28. ;
+         format VAR3 $16. ;
+         format VAR4 $48. ;
+         format VAR5 $64. ;
+         format VAR6 $40. ;
+         format VAR7 $3. ;
+         format VAR8 $3. ;
+         format VAR9 $3. ;
+         format VAR10 $3. ;
+      input
+                  VAR1
+                  VAR2
+                  VAR3
+                  VAR4
+                  VAR5
+                  VAR6
+                  VAR7
+                  VAR8
+                  VAR9
+                  VAR10
+      ;
+      if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+run;
+/*132979*/
+
+*レセプト;
+data PC.rece;
+      %let _EFIERR_ = 0; /* エラー検出のマクロ変数を設定します */
+      infile "&path.\レセプト.csv" delimiter = ',' MISSOVER DSD lrecl=32767 firstobs=2 ;
+         informat VAR1 $20. ;
+         informat VAR2 $26. ;
+         informat VAR3 $24. ;
+         informat VAR4 $8. ;
+         informat VAR5 $16. ;
+         informat VAR6 $48. ;
+         informat VAR7 $64. ;
+         informat VAR8 $4. ;
+         informat VAR9 $10. ;
+         informat VAR10 $10. ;
+         informat VAR11 $8. ;
+         format VAR1 $20. ;
+         format VAR2 $26. ;
+         format VAR3 $24. ;
+         format VAR4 $8. ;
+         format VAR5 $16. ;
+         format VAR6 $48. ;
+         format VAR7 $64. ;
+         format VAR8 $4. ;
+         format VAR9 $10. ;
+         format VAR10 $10. ;
+         format VAR11 $8. ;
+      input
+                  VAR1
+                  VAR2
+                  VAR3
+                  VAR4
+                  VAR5
+                  VAR6
+                  VAR7
+                  VAR8
+                  VAR9
+                  VAR10
+                  VAR11
+      ;
+      if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+run;
+/*507010853*/
+
+
+
+*傷病;
+data PC.disease;
+      %let _EFIERR_ = 0; /* エラー検出のマクロ変数を設定します */
+      infile "&path.\傷病.csv" delimiter = ',' MISSOVER DSD lrecl=32767 firstobs=2 ;
+         informat VAR1 $20. ;
+         informat VAR2 $26. ;
+         informat VAR3 $4. ;
+         informat VAR4 $24. ;
+         informat VAR5 $8. ;
+         informat VAR6 $16. ;
+         informat VAR7 $14. ;
+         informat VAR8 $1. ;
+         informat VAR9 $3. ;
+         informat VAR10 $10. ;
+         informat VAR11 $3. ;
+         informat VAR12 $3. ;
+         informat VAR13 $3. ;
+         format VAR1 $20. ;
+         format VAR2 $26. ;
+         format VAR3 $4. ;
+         format VAR4 $24. ;
+         format VAR5 $8. ;
+         format VAR6 $16. ;
+         format VAR7 $14. ;
+         format VAR8 $1. ;
+         format VAR9 $3. ;
+         format VAR10 $10. ;
+         format VAR11 $3. ;
+         format VAR12 $3. ;
+         format VAR13 $3. ;
+      input
+                  VAR1
+                  VAR2
+                  VAR3
+                  VAR4
+                  VAR5
+                  VAR6
+                  VAR7
+                  VAR8
+                  VAR9
+                  VAR10
+                  VAR11
+                  VAR12
+                  VAR13
+      ;
+      if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+run;
+*1158906955 obs;
+
+***********************************************************************************************************;
+
+*医薬品;
+data PC.drug;
+      %let _EFIERR_ = 0; /* エラー検出のマクロ変数を設定します */
+      infile "&path.\医薬品.csv" delimiter = ',' MISSOVER  DSD lrecl=32767 firstobs=2 ;
+         informat VAR1 $20. ;
+         informat VAR2 $26. ;
+         informat VAR3 $5. ;
+         informat VAR4 $24. ;
+         informat VAR5 $8. ;
+         informat VAR6 $16. ;
+         informat VAR7 $24. ;
+         informat VAR8 $1. ;
+         informat VAR9 $23. ;
+         informat VAR10 $10. ;
+         informat VAR11 $10. ;
+         informat VAR12 $13. ;
+         informat VAR13 $160. ;
+         informat VAR14 $9. ;
+         informat VAR15 $17. ;
+         informat VAR16 $5. ;
+         informat VAR17 $1. ;
+         informat VAR18 $4. ;
+         informat VAR19 $1. ;
+         format VAR1 $20. ;
+         format VAR2 $26. ;
+         format VAR3 $5. ;
+         format VAR4 $24. ;
+         format VAR5 $8. ;
+         format VAR6 $16. ;
+         format VAR7 $24. ;
+         format VAR8 $1. ;
+         format VAR9 $23. ;
+         format VAR10 $10. ;
+         format VAR11 $10. ;
+         format VAR12 $13. ;
+         format VAR13 $160. ;
+         format VAR14 $9. ;
+         format VAR15 $17. ;
+         format VAR16 $5. ;
+         format VAR17 $1. ;
+         format VAR18 $4. ;
+         format VAR19 $1. ;
+      input
+                  VAR1
+                  VAR2
+                  VAR3
+                  VAR4
+                  VAR5
+                  VAR6
+                  VAR7
+                  VAR8
+                  VAR9
+                  VAR10
+                  VAR11
+                  VAR12
+                  VAR13
+                  VAR14
+                  VAR15
+                  VAR16
+                  VAR17
+                  VAR18
+                  VAR19
+      ;
+      if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+run;
+*1218601207 obs;
+
+***********************************************************************************************************;
+
+*診療行為;
+data PC.procedure;
+      %let _EFIERR_ = 0; /* エラー検出のマクロ変数を設定します */
+      infile "&path.\診療行為.csv" delimiter = ','  MISSOVER DSD lrecl=32767 firstobs=2 ;
+         informat VAR1 $20. ;
+         informat VAR2 $26. ;
+         informat VAR3 $5. ;
+         informat VAR4 $24. ;
+         informat VAR5 $8. ;
+         informat VAR6 $10. ;
+         informat VAR7 $16. ;
+         informat VAR8 $18. ;
+         informat VAR9 $12. ;
+         informat VAR10 $1. ;
+         informat VAR11 $4. ;
+         informat VAR12 $5. ;
+         informat VAR13 $320. ;
+         informat VAR14 $5. ;
+         informat VAR15 $4. ;
+         informat VAR16 $10. ;
+         informat VAR17 $8. ;
+         informat VAR18 $8. ;
+         informat VAR19 $7. ;
+         format VAR1 $20. ;
+         format VAR2 $26. ;
+         format VAR3 $5. ;
+         format VAR4 $24. ;
+         format VAR5 $8. ;
+         format VAR6 $10. ;
+         format VAR7 $16. ;
+         format VAR8 $18. ;
+         format VAR9 $12. ;
+         format VAR10 $1. ;
+         format VAR11 $4. ;
+         format VAR12 $5. ;
+         format VAR13 $320. ;
+         format VAR14 $5. ;
+         format VAR15 $4. ;
+         format VAR16 $10. ;
+         format VAR17 $8. ;
+         format VAR18 $8. ;
+         format VAR19 $7. ;
+      input
+                  VAR1
+                  VAR2
+                  VAR3
+                  VAR4
+                  VAR5
+                  VAR6
+                  VAR7
+                  VAR8
+                  VAR9
+                  VAR10
+                  VAR11
+                  VAR12
+                  VAR13
+                  VAR14
+                  VAR15
+                  VAR16
+                  VAR17
+                  VAR18
+                  VAR19
+      ;
+      if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+run;
+*3366599599 obs;
+
+***********************************************************************************************************;
+
+*材料;
+data PC.zairyo;
+      %let _EFIERR_ = 0; /* エラー検出のマクロ変数を設定します */
+      infile "&path.\材料.csv" delimiter = ','  MISSOVER DSD lrecl=32767 firstobs=2 ;
+         informat VAR1 $20. ;
+         informat VAR2 $26. ;
+         informat VAR3 $5. ;
+         informat VAR4 $24. ;
+         informat VAR5 $8. ;
+         informat VAR6 $10. ;
+         informat VAR7 $16. ;
+         informat VAR8 $18. ;
+         informat VAR9 $12. ;
+         informat VAR10 $1. ;
+         informat VAR11 $160. ;
+         informat VAR12 $160. ;
+         informat VAR13 best12.;
+         informat VAR14 best12.;
+         informat VAR15 best12.;
+         informat VAR16 best12.;
+         informat VAR17 best12.;
+         informat VAR18 best12.;
+         informat VAR19 best12.;
+         format VAR1 $20. ;
+         format VAR2 $26. ;
+         format VAR3 $5. ;
+         format VAR4 $24. ;
+         format VAR5 $8. ;
+         format VAR6 $10. ;
+         format VAR7 $16. ;
+         format VAR8 $18. ;
+         format VAR9 $12. ;
+         format VAR10 $1. ;
+         format VAR11 $160. ;
+         format VAR12 $160. ;
+         format VAR13 best12.;
+         format VAR14 best12.;
+         format VAR15 best12.;
+         format VAR16 best12.;
+         format VAR17 best12.;
+         format VAR18 best12.;
+         format VAR19 best12.;
+      input
+                  VAR1
+                  VAR2
+                  VAR3
+                  VAR4
+                  VAR5
+                  VAR6
+                  VAR7
+                  VAR8
+                  VAR9
+                  VAR10
+                  VAR11
+                  VAR12
+                  VAR13
+                  VAR14
+                  VAR15
+                  VAR16
+                  VAR17
+                  VAR18
+                  VAR19
+      ;
+      if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+run;
+*21722158 obs;
+
+***********************************************************************************************************;
+
+*傷病マスタ;
+data PC.disease_master;
+       %let _EFIERR_ = 0; /* エラー検出のマクロ変数を設定します */
+       infile "&path.\傷病マスタ.csv" delimiter = ',' MISSOVER DSD lrecl=32767 firstobs=2 ;
+          informat VAR1 $14. ;
+          informat VAR2 $1440. ;
+          informat VAR3 $14. ;
+          informat VAR4 $2040. ;
+          informat VAR5 $14. ;
+          informat VAR6 $2040. ;
+          informat VAR7 $6. ;
+          informat VAR8 $2040. ;
+          informat VAR9 $8. ;
+          informat VAR10 $2040. ;
+          format VAR1 $14. ;
+          format VAR2 $1440. ;
+          format VAR3 $14. ;
+          format VAR4 $2040. ;
+          format VAR5 $14. ;
+          format VAR6 $2040. ;
+          format VAR7 $6. ;
+          format VAR8 $2040. ;
+          format VAR9 $8. ;
+          format VAR10 $2040. ;
+       input
+                   VAR1
+                   VAR2
+                   VAR3
+                   VAR4
+                   VAR5
+                   VAR6
+                   VAR7
+                   VAR8
+                   VAR9
+                   VAR10
+       ;
+       if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+run;
+*24205 obs;
+
+***********************************************************************************************************;
+
+*医薬品マスタ;
+data PC.drug_master;
+       %let _EFIERR_ = 0; /* エラー検出のマクロ変数を設定します */
+       infile "&path.\医薬品マスタ.csv" delimiter = ',' MISSOVER DSD lrecl=32767 firstobs=2 ;
+          informat VAR1 $24. ;
+          informat VAR2 $1200. ;
+          informat VAR3 $800. ;
+          informat VAR4 $2. ;
+          informat VAR5 $400. ;
+          informat VAR6 $6. ;
+          informat VAR7 $800. ;
+          informat VAR8 $8. ;
+          informat VAR9 $800. ;
+          informat VAR10 $10. ;
+          informat VAR11 $800. ;
+          informat VAR12 $14. ;
+          informat VAR13 $1600. ;
+          informat VAR14 $24. ;
+          informat VAR15 $24. ;
+          informat VAR16 $18. ;
+          informat VAR17 $8192. ;
+          informat VAR18 $1600. ;
+          informat VAR19 $3. ;
+          informat VAR20 $4. ;
+          informat VAR21 $80. ;
+          informat VAR22 $8. ;
+          informat VAR23 $160. ;
+          informat VAR24 $14. ;
+          informat VAR25 $400. ;
+          format VAR1 $24. ;
+          format VAR2 $1200. ;
+          format VAR3 $800. ;
+          format VAR4 $2. ;
+          format VAR5 $400. ;
+          format VAR6 $6. ;
+          format VAR7 $800. ;
+          format VAR8 $8. ;
+          format VAR9 $800. ;
+          format VAR10 $10. ;
+          format VAR11 $800. ;
+          format VAR12 $14. ;
+          format VAR13 $1600. ;
+          format VAR14 $24. ;
+          format VAR15 $24. ;
+          format VAR16 $18. ;
+          format VAR17 $8192. ;
+          format VAR18 $1600. ;
+          format VAR19 $3. ;
+          format VAR20 $4. ;
+          format VAR21 $80. ;
+          format VAR22 $8. ;
+          format VAR23 $160. ;
+          format VAR24 $14. ;
+          format VAR25 $400. ;
+      input
+                  VAR1
+                  VAR2
+                  VAR3
+                  VAR4
+                  VAR5
+                  VAR6
+                  VAR7
+                  VAR8
+                  VAR9
+                  VAR10
+                  VAR11
+                  VAR12
+                  VAR13
+                  VAR14
+                  VAR15
+                  VAR16
+                  VAR17
+                  VAR18
+                  VAR19
+                  VAR20
+                  VAR21
+                  VAR22
+                  VAR23
+                  VAR24
+                  VAR25
+      ;
+      if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+ run;
+*32793 obs;
+
+
+***********************************************************************************************************;
+
+*診療行為マスタ;
+data PC.procedure_master;
+      %let _EFIERR_ = 0; /* エラー検出のマクロ変数を設定します */
+      infile "&path.\診療行為マスタ.csv" delimiter = ',' MISSOVER DSD lrecl=32767 firstobs=2 ;
+         informat VAR1 $18. ;
+         informat VAR2 $12. ;
+         informat VAR3 $1600. ;
+         informat VAR4 $800. ;
+         informat VAR5 $800. ;
+         informat VAR6 $800. ;
+         informat VAR7 $800. ;
+         informat VAR8 $400. ;
+         informat icd9cm_level1 $8. ;
+         informat icd9cm_level2 $8. ;
+         informat icd9cm_level3 $32. ;
+         format VAR1 $18. ;
+         format VAR2 $12. ;
+         format VAR3 $1600. ;
+         format VAR4 $800. ;
+         format VAR5 $800. ;
+         format VAR6 $800. ;
+         format VAR7 $800. ;
+         format VAR8 $400. ;
+         format icd9cm_level1 $8. ;
+         format icd9cm_level2 $8. ;
+         format icd9cm_level3 $32. ;
+      input
+                  VAR1
+                  VAR2
+                  VAR3
+                  VAR4
+                  VAR5
+                  VAR6
+                  VAR7
+                  VAR8
+                  icd9cm_level1
+                  icd9cm_level2
+                  icd9cm_level3
+      ;
+      if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+run;
+*44900 obs;
+
+***********************************************************************************************************;
+
+*材料マスタ;
+data PC.zairyo_master;
+       %let _EFIERR_ = 0; /* エラー検出のマクロ変数を設定します */
+       infile "&path.\材料マスタ.csv" delimiter = ',' MISSOVER DSD lrecl=32767 firstobs=2 ;
+          informat VAR1 $18. ;
+          informat VAR2 $12. ;
+          informat VAR3 $1600. ;
+          informat VAR4 $800. ;
+          informat VAR5 $800. ;
+          informat VAR6 $400. ;
+          format VAR1 $18. ;
+          format VAR2 $12. ;
+          format VAR3 $1600. ;
+          format VAR4 $800. ;
+          format VAR5 $800. ;
+          format VAR6 $400. ;
+       input
+                   VAR1
+                   VAR2
+                   VAR3
+                   VAR4
+                   VAR5
+                   VAR6
+       ;
+       if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+run;
+*6793 obs;
+
+***********************************************************************************************************;
+
+*健診;
+data PC.kenshin;
+      %let _EFIERR_ = 0; /* エラー検出のマクロ変数を設定します */
+      infile "&path.\健診.csv" delimiter = ','  MISSOVER DSD lrecl=32767 firstobs=2 ;
+         informat VAR1 $20. ;
+         informat VAR2 $20. ;
+         informat VAR3 $10. ;
+         informat VAR4 best12.;
+         informat VAR5 best12.;
+         informat VAR6 best12.;
+         informat VAR7 best12.;
+         informat VAR8 best12.;
+         informat VAR9 best12.;
+         informat VAR10 best12.;
+         informat VAR11 best12.;
+         informat VAR12 best12.;
+         informat VAR13 best12.;
+         informat VAR14 best12.;
+         informat VAR15 best12.;
+         informat VAR16 best12.;
+         informat VAR17 best12.;
+         informat VAR18 best12.;
+         informat VAR19 best12.;
+		 informat VAR20 best12.;
+         informat VAR21 best12.;
+         informat VAR22 best12.;
+         informat VAR23 best12.;
+         informat VAR24 best12.;
+         informat VAR25 best12.;
+         informat VAR26 best12.;
+         informat VAR27 best12.;
+         informat VAR28 best12.;
+         informat VAR29 best12.;
+		 informat VAR30 best12.;
+         informat VAR31 best12.;
+         informat VAR32 best12.;
+         informat VAR33 best12.;
+         informat VAR34 best12.;
+         informat VAR35 best12.;
+         informat VAR36 best12.;
+         informat VAR37 best12.;
+         informat VAR38 best12.;
+         informat VAR39 best12.;
+		 informat VAR40 best12.;
+         informat VAR41 best12.;
+         informat VAR42 best12.;
+         informat VAR43 best12.;
+         informat VAR44 best12.;
+         informat VAR45 best12.;
+         informat VAR46 best12.;
+         informat VAR47 best12.;
+         informat VAR48 best12.;
+         informat VAR49 best12.;
+		 informat VAR50 best12.;
+         informat VAR51 best12.;
+         informat VAR52 best12.;
+         informat VAR53 best12.;
+         informat VAR54 best12.;
+         informat VAR55 best12.;
+         informat VAR56 best12.;
+         informat VAR57 best12.;
+         format VAR1 $20. ;
+         format VAR2 $20. ;
+         format VAR3 $10. ;
+         format VAR4 best12.;
+         format VAR5 best12.;
+         format VAR6 best12.;
+         format VAR7 best12.;
+         format VAR8 best12.;
+         format VAR9 best12.;
+         format VAR10 best12.;
+         format VAR11 best12.;
+         format VAR12 best12.;
+         format VAR13 best12.;
+         format VAR14 best12.;
+         format VAR15 best12.;
+         format VAR16 best12.;
+         format VAR17 best12.;
+         format VAR18 best12.;
+         format VAR19 best12.;
+		 format VAR20 best12.;
+         format VAR21 best12.;
+         format VAR22 best12.;
+         format VAR23 best12.;
+         format VAR24 best12.;
+         format VAR25 best12.;
+         format VAR26 best12.;
+         format VAR27 best12.;
+         format VAR28 best12.;
+         format VAR29 best12.;
+		 format VAR30 best12.;
+         format VAR31 best12.;
+         format VAR32 best12.;
+         format VAR33 best12.;
+         format VAR34 best12.;
+         format VAR35 best12.;
+         format VAR36 best12.;
+         format VAR37 best12.;
+         format VAR38 best12.;
+         format VAR39 best12.;
+		 format VAR40 best12.;
+         format VAR41 best12.;
+         format VAR42 best12.;
+         format VAR43 best12.;
+         format VAR44 best12.;
+         format VAR45 best12.;
+         format VAR46 best12.;
+         format VAR47 best12.;
+         format VAR48 best12.;
+         format VAR49 best12.;
+		 format VAR50 best12.;
+         format VAR51 best12.;
+         format VAR52 best12.;
+         format VAR53 best12.;
+         format VAR54 best12.;
+         format VAR55 best12.;
+         format VAR56 best12.;
+         format VAR57 best12.;
+      input
+                  VAR1
+                  VAR2
+                  VAR3
+                  VAR4
+                  VAR5
+                  VAR6
+                  VAR7
+                  VAR8
+                  VAR9
+                  VAR10
+                  VAR11
+                  VAR12
+                  VAR13
+                  VAR14
+                  VAR15
+                  VAR16
+                  VAR17
+                  VAR18
+                  VAR19
+	              VAR20
+                  VAR21
+                  VAR22
+                  VAR23
+                  VAR24
+                  VAR25
+                  VAR26
+                  VAR27
+                  VAR28
+                  VAR29
+	              VAR30
+                  VAR31
+                  VAR32
+                  VAR33
+                  VAR34
+                  VAR35
+                  VAR36
+                  VAR37
+                  VAR38
+                  VAR39
+	              VAR40
+                  VAR41
+                  VAR42
+                  VAR43
+                  VAR44
+                  VAR45
+                  VAR46
+                  VAR47
+                  VAR48
+                  VAR49
+	              VAR50
+                  VAR51
+                  VAR52
+                  VAR53
+                  VAR54
+                  VAR55
+                  VAR56
+                  VAR57
+      ;
+      if _ERROR_ then call symputx('_EFIERR_',1);  /* set ERROR detection macro variable */
+run;
+*24844872 obs;
