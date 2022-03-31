@@ -1,0 +1,203 @@
+libname RAW "D:\raw";
+libname MYLIB "D:\mylib";
+libname AYA "D:\aya02";
+
+
+/*demographic*/
+proc sql noprint;
+create table aya.demographic as select distinct * from AYA.ayapatients where studyid in (select studyid from aya.final);
+quit;
+
+data age_group;
+set aya.demographic;
+if 15<=age<=24 then adult = 0;
+else adult = 1;
+run;
+
+proc freq data= age_group order=freq;
+tables adult/nocum nocol;
+run;
+/*
+adult 986 83.77 
+adolescent 191 16.23 
+*/
+
+
+
+proc freq data= age_group order=freq;
+tables sex/nocum nocol;
+run;
+/*
+F 813 69.07 
+M 364 30.93 
+*/
+
+
+
+/*onset cancer*/
+
+
+proc sql noprint;
+create table onset_cancer as select distinct * from aya.cancer_05_22 where studyid in (select studyid from aya.final);
+quit;
+
+proc freq data= onset_cancer order=freq;
+tables icd/nocum nocol nopercent;
+run;
+
+/*
+C50	乳腺	565
+C85	非ホジキンリンパ腫	137
+C92	 骨髄性白血病	97
+C91	 リンパ性白血病	54
+C81	 ホジキン＜Hodgkin＞リンパ腫	35
+C67	 膀胱	33
+C49	その他の結合組織及び軟部組織	32
+C95	 細胞型不明の白血病	29
+C41	その他及び部位不明の骨及び関節軟骨	20
+C40	肢の骨及び関節軟骨	19
+C78	呼吸器及び消化器の続発性悪性新生物	15
+C83	 非ろ＜濾＞胞性リンパ腫	15
+C38	心臓，縦隔及び胸膜	12
+C56	 卵巣	10
+C34	 気管支及び肺	9
+C54	 子宮体部	9
+C22	 肝及び肝内胆管	8
+C48	後腹膜及び腹膜	7
+C79	その他の部位及び部位不明の続発性悪性新生物	7
+C77	リンパ節の続発性及び部位不明の悪性新生物	6
+C53	子宮頚部	5
+C73	甲状腺	5
+C16	 胃	4
+C37	 胸腺	4
+C08	 その他及び部位不明の大唾液腺	3
+C62	 精巣＜睾丸＞	3
+C84	 成熟T/NK細胞リンパ腫	3
+C20	 直腸	2
+C47	 末梢神経及び自律神経系	2
+C66	 尿管	2
+C71	 脳	2
+C74	 副腎	2
+C76	その他及び部位不明確の悪性新生物	2
+C80	 悪性新生物, 部位が明示されていないもの 	2
+C15	 食道	1
+C17	 小腸	1
+C18	 結腸	1
+C25	 膵	1
+C30	 鼻腔及び中耳	1
+C31	 副鼻腔	1
+C44	 皮膚のその他	1
+C55	 子宮	1
+C61	前立腺	1
+C69	 眼及び付属器	1
+C72	脊髄，脳神経及びその他の中枢神経系の部位	1
+C75	 その他の内分泌腺及び関連組織	1
+C82	 ろ＜濾＞胞性リンパ腫	1
+C86	 T/NK細胞リンパ腫のその他	1
+C88	 悪性免疫増殖性疾患	1
+C90	多発性骨髄腫及び悪性形質細胞性新生物	1
+C93	 単球性白血病	1
+
+*/
+
+
+/*cancer diagnosis in baseline*/
+/*it is possible that baseline cancer is different from onset cancer if the time interval between cancer onset and anthracycline prescription is too long*/
+/*data preparation*/
+proc sql noprint;
+create table Comorbidity as select distinct * from AYA.disease where studyid in (select studyid from aya.final);
+quit;
+
+
+data entrydate;
+set aya.final;
+keep studyid entrydate;
+run;
+
+data aya.comorbidity;
+merge comorbidity entrydate;
+by studyid;
+run;
+
+
+data cancer_icd;
+set aya.comorbidity;
+where icd like "C%";
+run;
+
+
+
+data cancer_icd01;
+set cancer_icd;
+lookback = entrydate-dis_start_date;
+if 0<=lookback<=180;
+run;
+
+proc sort data = cancer_icd01 nodupkey;
+by studyid dis_start_date;
+run;
+
+data cancer_icd02;
+set cancer_icd01;
+if first.studyid;
+by studyid;
+run;
+
+proc freq data = cancer_icd02;
+tables icd/nocum nocol nopercent;
+run;
+
+/*
+icd	diagnosis	
+C08	 その他及び部位不明の大唾液腺	3
+C15	 食道	1
+C16	 胃	4
+C17	 小腸	
+C18	 結腸	1
+C20	 直腸	
+C22	 肝及び肝内胆管	8
+C25	 膵	2
+C30	 鼻腔及び中耳	1
+C31	 副鼻腔	2
+C34	 気管支及び肺	7
+C37	 胸腺	5
+C38	心臓，縦隔及び胸膜	13
+C40	肢の骨及び関節軟骨	19
+C41	その他及び部位不明の骨及び関節軟骨	19
+C44	 皮膚のその他	
+C47	 末梢神経及び自律神経系	3
+C48	後腹膜及び腹膜	5
+C49	その他の結合組織及び軟部組織	31
+C50	乳腺	566
+C53	子宮頚部	2
+C54	 子宮体部	9
+C55	 子宮	
+C56	 卵巣	12
+C61	前立腺	1
+C62	 精巣＜睾丸＞	3
+C66	 尿管	3
+C67	 膀胱	33
+C69	 眼及び付属器	
+C71	 脳	2
+C72	脊髄，脳神経及びその他の中枢神経系の部位	1
+C73	甲状腺	4
+C74	 副腎	2
+C75	 その他の内分泌腺及び関連組織	1
+C76	その他及び部位不明確の悪性新生物	2
+C77	リンパ節の続発性及び部位不明の悪性新生物	9
+C78	呼吸器及び消化器の続発性悪性新生物	21
+C79	その他の部位及び部位不明の続発性悪性新生物	9
+C80	 悪性新生物, 部位が明示されていないもの 	1
+C81	 ホジキン＜Hodgkin＞リンパ腫	34
+C82	 ろ＜濾＞胞性リンパ腫	1
+C83	 非ろ＜濾＞胞性リンパ腫	15
+C84	 成熟T/NK細胞リンパ腫	3
+C85	非ホジキンリンパ腫	137
+C86	 T/NK細胞リンパ腫のその他	1
+C88	 悪性免疫増殖性疾患	
+C90	多発性骨髄腫及び悪性形質細胞性新生物	1
+C91	 リンパ性白血病	53
+C92	 骨髄性白血病	91
+C93	 単球性白血病	1
+C95	 細胞型不明の白血病	34
+*/
